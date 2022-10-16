@@ -4,8 +4,8 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "words")
-data class WordPair(
-    @PrimaryKey(autoGenerate = true)
+data class WordPairEntity(
+    @PrimaryKey
     val id: Int,
     val first: String,
     val second: String,
