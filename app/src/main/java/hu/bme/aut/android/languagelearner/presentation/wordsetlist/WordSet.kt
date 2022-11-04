@@ -1,4 +1,4 @@
-package hu.bme.aut.android.languagelearner
+package hu.bme.aut.android.languagelearner.presentation.wordsetlist
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -6,11 +6,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.flowlayout.FlowRow
 import com.google.accompanist.flowlayout.SizeMode
-import hu.bme.aut.android.languagelearner.ui.theme.LanguageLearnerTheme
+import hu.bme.aut.android.languagelearner.domain.model.WordTag
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -19,11 +18,14 @@ fun WordSet(
     description: String,
     wordsCount: Int,
     wordsCountMemorized: Int,
-    tags: List<String>
+    tags: List<WordTag>,
+    onclick: () -> Unit,
+    onTagClick: (Int) -> Unit
 ) {
     ElevatedCard(
         modifier = Modifier.padding(10.dp),
-        shape = RoundedCornerShape(20.dp)
+        shape = RoundedCornerShape(20.dp),
+        onClick = onclick
     ) {
         Column(modifier = Modifier.padding(8.dp)) {
             Text(text = title, style = MaterialTheme.typography.headlineLarge)
@@ -32,18 +34,14 @@ fun WordSet(
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = "$wordsCountMemorized/$wordsCount cards memorized", style = MaterialTheme.typography.labelSmall)
             FlowRow(modifier = Modifier.fillMaxWidth(), mainAxisSpacing = 8.dp, mainAxisSize = SizeMode.Wrap) {
-                tags.forEach { text ->
-                    SuggestionChip(onClick = {}, label = { Text(text = text)}, shape = CircleShape)
+                tags.forEach { tag ->
+                    SuggestionChip(
+                        onClick = { onTagClick(tag.id) },
+                        label = { Text(text = tag.tag) },
+                        shape = CircleShape
+                    )
                 }
             }
         }
-    }
-}
-
-@Preview
-@Composable
-fun WordSetPreview() {
-    LanguageLearnerTheme {
-        WordSet("Title","Description - optional", 7, 0, listOf("angol", "magyar"))
     }
 }
