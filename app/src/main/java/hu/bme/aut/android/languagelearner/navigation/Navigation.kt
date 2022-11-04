@@ -1,16 +1,17 @@
 package hu.bme.aut.android.languagelearner.navigation
 
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import hu.bme.aut.android.languagelearner.ViewModel1
-import hu.bme.aut.android.languagelearner.WordSet
+import androidx.navigation.navArgument
+import hu.bme.aut.android.languagelearner.presentation.login.LoginScreen
+import hu.bme.aut.android.languagelearner.presentation.wordlearning.LearningScreen
+import hu.bme.aut.android.languagelearner.presentation.wordquiz.QuizScreen
+import hu.bme.aut.android.languagelearner.presentation.wordsetdetail.WordSetDetailScreen
+import hu.bme.aut.android.languagelearner.presentation.wordsetlist.WordSetListScreen
 
 @Composable
 fun Navigation(
@@ -19,33 +20,68 @@ fun Navigation(
 ) {
     NavHost(
         navController = navHostController,
-        startDestination = "1",
+        startDestination = Screen.SetList.route,
         modifier = modifier
     ){
-        composable(route = "1"){
-            valami()
-
-            //WordSet("Title","Description - optional", 7, 0, listOf("angol", "magyar"))
+        composable(route = Screen.SetList.route){
+            WordSetListScreen(navHostController = navHostController)
         }
-    }
-
-}
-
-@Composable
-fun valami(
-    viewModel1: ViewModel1 = hiltViewModel()
-) {
-    val state by viewModel1.state.collectAsState(initial = emptyList())
-    LazyColumn(){
-        items(state.size){ index ->
-            val wordSet = state[index]
-            WordSet(
-                title = wordSet.title,
-                description = wordSet.description,
-                wordsCount = wordSet.words.size,
-                wordsCountMemorized = wordSet.words.filter { it.memorized }.size,
-                tags = wordSet.tags
+        composable(
+            route = Screen.SetDetail.route + "/{id}",
+            arguments = listOf(
+                navArgument("id"){
+                    type = NavType.IntType
+                    nullable = false
+                }
             )
+        ){
+            it.arguments?.getInt("id")?.let { it1 ->
+                WordSetDetailScreen(it1, navHostController)
+            }
+        }
+        composable(
+            route = Screen.Learning.route + "/{setId}",
+            arguments = listOf(
+                navArgument("setId"){
+                    type = NavType.IntType
+                    nullable = false
+                }
+            )
+        ){
+            it.arguments?.getInt("setId")?.let { setId ->
+                LearningScreen(setId, navHostController)
+            }
+        }
+        composable(
+            route = Screen.Quiz.route + "/{setId}",
+            arguments = listOf(
+                navArgument("setId"){
+                    type = NavType.IntType
+                    nullable = false
+                }
+            )
+        ){
+            it.arguments?.getInt("setId")?.let { setId ->
+                QuizScreen(setId = setId, navHostController = navHostController)
+            }
+        }
+        composable(
+            route = Screen.Login.route+"/{mode}",
+            arguments = listOf(
+                navArgument("mode"){
+                    type = NavType.StringType
+                    nullable = false
+                }
+            )
+        ){
+            it.arguments?.getString("mode")?.let { mode ->
+                LoginScreen(
+                    mode = mode,
+                    navController = navHostController,
+                    target = Screen.SetList.route
+                )
+            }
         }
     }
+
 }
