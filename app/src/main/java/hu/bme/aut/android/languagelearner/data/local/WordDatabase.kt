@@ -15,5 +15,7 @@ import androidx.room.RoomDatabase
     exportSchema = true
 )
 abstract class WordDatabase: RoomDatabase() {
+    abstract val wordSetDao: WordSetDao
     abstract val wordDao: WordDao
+    abstract val tagDao: TagDao
 }

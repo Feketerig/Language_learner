@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "a34e804de6a3ce15c9f1fe7f8ab240e1",
+    "identityHash": "f8d24c8843f9cee8d39b734134abb763",
     "entities": [
       {
         "tableName": "word_sets",
@@ -214,7 +214,7 @@
       },
       {
         "tableName": "tags",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `tag` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `tag` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -233,17 +233,17 @@
           "columnNames": [
             "id"
           ],
-          "autoGenerate": false
+          "autoGenerate": true
         },
         "indices": [
           {
             "name": "index_tags_tag",
-            "unique": false,
+            "unique": true,
             "columnNames": [
               "tag"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_tags_tag` ON `${TABLE_NAME}` (`tag`)"
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_tags_tag` ON `${TABLE_NAME}` (`tag`)"
           }
         ],
         "foreignKeys": []
@@ -252,7 +252,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a34e804de6a3ce15c9f1fe7f8ab240e1')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f8d24c8843f9cee8d39b734134abb763')"
     ]
   }
 }

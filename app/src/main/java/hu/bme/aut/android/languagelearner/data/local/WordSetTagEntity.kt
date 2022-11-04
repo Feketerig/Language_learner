@@ -6,10 +6,10 @@ import androidx.room.PrimaryKey
 
 @Entity(
     tableName = "tags",
-    indices = [Index(value = ["tag"])]
+    indices = [Index(value = ["tag"], unique = true)]
 )
 data class WordSetTagEntity (
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     val id: Int,
     val tag: String
 )

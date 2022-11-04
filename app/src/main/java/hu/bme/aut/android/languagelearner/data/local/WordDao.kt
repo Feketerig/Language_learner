@@ -1,31 +1,19 @@
 package hu.bme.aut.android.languagelearner.data.local
 
-import androidx.room.*
-import kotlinx.coroutines.flow.Flow
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 
 @Dao
 interface WordDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertWordSets(wordSets: List<WordSetEntity>)
-
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertWordPairs(wordPairs: List<WordPairEntity>)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertWordTags(wordTags: List<WordSetTagEntity>): List<Long>
+    @Query("select * from words where id in (select word_pair_id from word_sets_word_pairs where word_set_id = :id)")
+    suspend fun getWordPairsBySetId(id: Int): List<WordPairEntity>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertWordSetWordPairCrossRefs(wordSetWordPairCrossRefs: List<WordSetWordPairCrossRef>)
-
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertWordSetWordTagCrossRefs(wordSetWordTagCrossRefs: List<WordSetWordTagCrossRef>)
-
-    @Transaction
-    @Query("select * from word_sets")
-    fun getWordSets(): Flow<List<PopulatedWordSet>>
-
-    @Transaction
-    @Query("select * from word_sets where id in (select word_set_id from word_sets_word_tags where word_tag_id in (select id from tags where tag in (:searchTags)))")
-    fun getWordSets(searchTags: Set<String> = emptySet()): Flow<List<PopulatedWordSet>>
+    @Query("update words set memorized = :memorized where id = :id")
+    suspend fun updateWordMemorized(id: Int, memorized: Boolean)
 }
