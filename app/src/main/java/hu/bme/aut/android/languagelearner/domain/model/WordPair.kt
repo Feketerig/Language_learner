@@ -4,5 +4,5 @@ data class WordPair(
     val id: Int,
     val first: String,
     val second: String,
-    val memorized: Boolean
+    var memorized: Boolean
 )

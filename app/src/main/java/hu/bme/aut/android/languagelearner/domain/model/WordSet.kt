@@ -5,5 +5,5 @@ data class WordSet(
     val title: String,
     val description: String,
     val words: List<WordPair>,
-    val tags: List<String>
+    val tags: List<WordTag>
 )

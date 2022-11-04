@@ -6,6 +6,7 @@
 
     <application
         android:name=".LanguageLearnerApplication"
+        android:screenOrientation="portrait"
         android:allowBackup="true"
         android:usesCleartextTraffic="true"
         android:dataExtractionRules="@xml/data_extraction_rules"

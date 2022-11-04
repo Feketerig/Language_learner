@@ -6,8 +6,12 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
@@ -21,42 +25,61 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val navHostController = rememberNavController()
+            var showMenu by remember {
+                mutableStateOf(false)
+            }
             LanguageLearnerTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
                     Scaffold(
-                        floatingActionButton = {
-                            FloatingActionButton(onClick = {  }) {
-                                Icon(
-                                    imageVector = Icons.Default.Add,
-                                    contentDescription = "Add new word set",
-                                    tint = MaterialTheme.colorScheme.onPrimaryContainer
-                                )
+                        /*floatingActionButton = {
+                            if (navHostController.currentBackStackEntryAsState().value?.destination?.route == Screen.SetList.route) {
+                                FloatingActionButton(onClick = { }) {
+                                    Icon(
+                                        imageVector = Icons.Default.Add,
+                                        contentDescription = "Add new word set",
+                                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                                    )
+                                }
                             }
-                        },
+                        },*/
                         topBar = {
                             CenterAlignedTopAppBar(
-                            title = {
-                                Text(text = "Language learner")
-                            },
-                            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                                titleContentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                                title = {
+                                    Text(text = "Language learner")
+                                },
+                                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                                    titleContentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                                ),
+                                actions = {
+                                    IconButton(onClick = { showMenu = !showMenu }) {
+                                        Icon(
+                                            imageVector = Icons.Filled.MoreVert,
+                                            contentDescription = "Logout"
+                                        )
+                                    }
+
+                                    DropdownMenu(
+                                        expanded = showMenu,
+                                        onDismissRequest = { showMenu = false }
+                                    ) {
+                                        DropdownMenuItem(
+                                            text = { Text(text = "Logout") },
+                                            onClick = { /*TODO*/ })
+                                    }
+                                }
                             )
-                        )}
+                        },
+
                     ) { paddingValues ->
                         Navigation(
                             navHostController = navHostController,
                             modifier = Modifier
                                 .padding(paddingValues)
                         )
-                        /*LazyColumn(contentPadding = paddingValues){
-                            items(20){
-                                WordSet("Title","Description - optional", 7, 0, listOf("angol", "magyar"))
-                            }
-                        }*/
                     }
                 }
 
