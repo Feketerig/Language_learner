@@ -6,5 +6,6 @@ import kotlinx.serialization.Serializable
 data class WordPairDTO(
     val id: Int,
     val first: String,
-    val second: String
+    val second: String,
+    val memorized: Boolean
 )
