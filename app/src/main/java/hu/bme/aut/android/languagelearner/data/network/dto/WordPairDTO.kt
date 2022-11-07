@@ -1,4 +1,4 @@
-package hu.bme.aut.android.languagelearner.data.network
+package hu.bme.aut.android.languagelearner.data.network.dto
 
 import kotlinx.serialization.Serializable
 

@@ -1,7 +1,20 @@
 package hu.bme.aut.android.languagelearner.data.network
 
-class WordApiImpl: WordApi {
-    override suspend fun getAllWordSets(): List<WordSetDTO> {
+import hu.bme.aut.android.languagelearner.data.network.dto.LoginRequestDTO
+import hu.bme.aut.android.languagelearner.data.network.dto.LoginResponse
+import hu.bme.aut.android.languagelearner.data.network.dto.UserDetailsResponse
+import hu.bme.aut.android.languagelearner.data.network.dto.WordSetDTO
+import io.ktor.client.*
+import io.ktor.client.call.*
+import io.ktor.client.request.*
+import io.ktor.http.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+
+class WordApiImpl(
+    private val client: HttpClient
+): WordApi {
+    /*override suspend fun getAllWordSets(): List<WordSetDTO> {
         return listOf(
             WordSetDTO(
                 id = 1,
@@ -25,9 +38,35 @@ class WordApiImpl: WordApi {
                 tags = listOf(WordSetTagDTO(1,"angol"), WordSetTagDTO(2,"magyar"))
             )
         )
-    }
+        return emptyList()
+    }*/
 
     override suspend fun updateWordMemorized(wordPairId: Int, memorized: Boolean) {
 
+    }
+
+    override suspend fun login(): LoginResponse {
+        return client.post(urlString = WordApi.Endpoints.Auth.url + "/login"){
+            contentType(ContentType.Application.Json)
+            setBody(LoginRequestDTO("asd2@asd.asd", "rM8ax1hXrk"))
+        }.body()
+
+    }
+
+    override suspend fun getAllCourses(): List<WordSetDTO> {
+        return client.get(WordApi.Endpoints.Course.url + "/student/all"){
+            bearerAuth(loginResponse.accessToken)
+        }.body()
+    }
+
+    init {
+        GlobalScope.launch {
+            loginResponse = login()
+            getAllCourses()
+        }
+    }
+
+    companion object{
+        var loginResponse = LoginResponse(UserDetailsResponse(), "", "")
     }
 }

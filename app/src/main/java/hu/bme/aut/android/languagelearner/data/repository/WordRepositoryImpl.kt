@@ -35,15 +35,15 @@ class WordRepositoryImpl @Inject constructor(
     }
 
     override suspend fun sync() {
-        val wordSets = wordApi.getAllWordSets()
+        //val wordSets = wordApi.getAllWordSets()
 
 
         //TODO Change insert to upsert
-        wordSetDao.insertWordSets(wordSets = wordSets.map { WordSetEntity(it.id, it.title, it.description) })
+        /*wordSetDao.insertWordSets(wordSets = wordSets.map { WordSetEntity(it.id, it.title, it.description) })
         wordDao.insertWordPairs(wordPairs = wordSets.map { wordSet -> wordSet.words.map { WordPairEntity(it.id, it.first, it.second, it.memorized) } }.flatten() )
         tagDao.insertWordTags(wordTags = wordSets.map { wordSet -> wordSet.tags.map { WordSetTagEntity(id = 0, tag = it.tag) } }.flatten())
         wordSetDao.insertWordSetWordPairCrossRefs(wordSetWordPairCrossRefs = wordSets.map { wordSet -> wordSet.words.map { word -> WordSetWordPairCrossRef(WordSetId = wordSet.id, WordPairId = word.id) } }.flatten())
-        wordSetDao.insertWordSetWordTagCrossRefs(wordSetWordTagCrossRefs = wordSets.map { wordSet -> wordSet.tags.map { tag -> WordSetWordTagCrossRef(WordSetId = wordSet.id, WordTag = tagDao.getTagIdByTag(tag = tag.tag)) } }.flatten())
+        wordSetDao.insertWordSetWordTagCrossRefs(wordSetWordTagCrossRefs = wordSets.map { wordSet -> wordSet.tags.map { tag -> WordSetWordTagCrossRef(WordSetId = wordSet.id, WordTag = tagDao.getTagIdByTag(tag = tag.tag)) } }.flatten())*/
     }
 
     override suspend fun getWordsBySetId(id: Int): List<WordPair> =
