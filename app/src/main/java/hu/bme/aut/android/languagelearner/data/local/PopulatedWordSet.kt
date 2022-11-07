@@ -26,5 +26,5 @@ data class PopulatedWordSet(
             entityColumn = "word_tag_id"
         )
     )
-    val tags: List<WordSetTagEntity>
+    val tags: List<WordTagEntity>
 )

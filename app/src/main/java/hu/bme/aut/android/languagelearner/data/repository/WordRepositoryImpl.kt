@@ -50,7 +50,7 @@ class WordRepositoryImpl @Inject constructor(
         wordDao.getWordPairsBySetId(id).map (WordPairEntity::toDomain)
 
     override fun getTags(): Flow<List<WordTag>> =
-        tagDao.getTags().map { it.map(WordSetTagEntity::toDomain)}
+        tagDao.getTags().map { it.map(WordTagEntity::toDomain)}
 
     override suspend fun wordMemorizedChanged(wordPairId: Int, memorized: Boolean){
         wordDao.updateWordMemorized(wordPairId, memorized)

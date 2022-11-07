@@ -9,7 +9,7 @@ import androidx.room.RoomDatabase
         WordSetWordPairCrossRef::class,
         WordPairEntity::class,
         WordSetWordTagCrossRef::class,
-        WordSetTagEntity::class
+        WordTagEntity::class
     ],
     version = 1,
     exportSchema = true

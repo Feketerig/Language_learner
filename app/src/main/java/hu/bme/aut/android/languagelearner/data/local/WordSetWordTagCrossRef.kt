@@ -16,7 +16,7 @@ import androidx.room.Index
             onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
-            entity = WordSetTagEntity::class,
+            entity = WordTagEntity::class,
             parentColumns = ["id"],
             childColumns = ["word_tag_id"],
             onDelete = ForeignKey.CASCADE

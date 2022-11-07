@@ -6,8 +6,9 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface WordSetDao {
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertWordSets(wordSets: List<WordSetEntity>)
+
+    @Upsert
+    suspend fun upsertWordSets(wordSets: List<WordSetEntity>)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertWordSetWordPairCrossRefs(wordSetWordPairCrossRefs: List<WordSetWordPairCrossRef>)
