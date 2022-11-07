@@ -5,8 +5,6 @@ import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 class WordApiImpl(
     private val client: HttpClient
@@ -46,6 +44,8 @@ class WordApiImpl(
         return client.post(urlString = WordApi.Endpoints.Auth.url + "/login"){
             contentType(ContentType.Application.Json)
             setBody(LoginRequestDTO("asd2@asd.asd", "rM8ax1hXrk"))
+            //setBody(LoginRequestDTO("asd3@asd.asd", "TvX-gl1pNv"))
+            //setBody(LoginRequestDTO("asd@asd.asd", "12345678"))
         }.body()
 
     }
@@ -57,19 +57,9 @@ class WordApiImpl(
     }
 
     override suspend fun getAllWordsByCourseId(id: Int): List<WordPairDTO> {
-        return client.get(WordApi.Endpoints.Words.url + "/words/" + id.toString()){
+        return client.get(WordApi.Endpoints.Words.url + "/student/words/" + id.toString()){
             bearerAuth(loginResponse.accessToken)
         }.body()
-    }
-
-    init {
-        GlobalScope.launch {
-            loginResponse = login()
-            val courses = getAllCourses()
-            courses.forEach {
-                getAllWordsByCourseId(it.id)
-            }
-        }
     }
 
     companion object{

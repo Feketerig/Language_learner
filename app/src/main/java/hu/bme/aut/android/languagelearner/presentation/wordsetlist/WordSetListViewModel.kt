@@ -6,6 +6,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import hu.bme.aut.android.languagelearner.data.network.WordApi
+import hu.bme.aut.android.languagelearner.data.network.WordApiImpl
 import hu.bme.aut.android.languagelearner.domain.model.WordSet
 import hu.bme.aut.android.languagelearner.domain.repository.WordRepository
 import kotlinx.coroutines.flow.Flow
@@ -16,7 +18,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class WordSetListViewModel @Inject constructor(
-    private val wordRepository: WordRepository
+    private val wordRepository: WordRepository,
+    private val wordApi: WordApi
 ): ViewModel() {
     //TODO check if this is good
     var selectedTags by mutableStateOf(setOf<Int>())
@@ -31,6 +34,7 @@ class WordSetListViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
+            WordApiImpl.loginResponse = wordApi.login()
             wordRepository.sync()
         }
     }

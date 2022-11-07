@@ -7,5 +7,5 @@ data class WordPairDTO(
     val id: Int,
     val word: String,
     val translation: String,
-    val metadata: List<String>
+    val saved: Boolean
 )

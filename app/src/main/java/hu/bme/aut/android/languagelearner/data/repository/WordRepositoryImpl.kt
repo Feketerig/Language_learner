@@ -2,8 +2,11 @@ package hu.bme.aut.android.languagelearner.data.repository
 
 import androidx.sqlite.db.SimpleSQLiteQuery
 import hu.bme.aut.android.languagelearner.data.local.*
+import hu.bme.aut.android.languagelearner.data.mapper.toDatabase
 import hu.bme.aut.android.languagelearner.data.mapper.toDomain
 import hu.bme.aut.android.languagelearner.data.network.WordApi
+import hu.bme.aut.android.languagelearner.data.network.dto.WordPairDTO
+import hu.bme.aut.android.languagelearner.data.network.dto.WordSetDTO
 import hu.bme.aut.android.languagelearner.domain.model.WordPair
 import hu.bme.aut.android.languagelearner.domain.model.WordSet
 import hu.bme.aut.android.languagelearner.domain.model.WordTag
@@ -35,10 +38,24 @@ class WordRepositoryImpl @Inject constructor(
     }
 
     override suspend fun sync() {
-        //val wordSets = wordApi.getAllWordSets()
+        val courses = wordApi.getAllCourses()
 
+        wordSetDao.upsertWordSets(courses.map(WordSetDTO::toDatabase))
 
-        //TODO Change insert to upsert
+        courses.forEach{ course ->
+            val words = wordApi.getAllWordsByCourseId(course.id)
+
+            wordDao.upsertWordPairs(words.map(WordPairDTO::toDatabase))
+            wordSetDao.insertWordSetWordPairCrossRefs(
+                words.map { word ->
+                    WordSetWordPairCrossRef(
+                        WordSetId = course.id,
+                        WordPairId = word.id
+                    )
+                }
+            )
+        }
+
         /*wordSetDao.insertWordSets(wordSets = wordSets.map { WordSetEntity(it.id, it.title, it.description) })
         wordDao.insertWordPairs(wordPairs = wordSets.map { wordSet -> wordSet.words.map { WordPairEntity(it.id, it.first, it.second, it.memorized) } }.flatten() )
         tagDao.insertWordTags(wordTags = wordSets.map { wordSet -> wordSet.tags.map { WordSetTagEntity(id = 0, tag = it.tag) } }.flatten())
