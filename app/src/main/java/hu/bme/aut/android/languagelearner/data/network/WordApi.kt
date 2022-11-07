@@ -10,7 +10,7 @@ interface WordApi {
 
     suspend fun getAllCourses(): List<WordSetDTO>
 
-
+    suspend fun getAllWordsByCourseId(id: Int): List<WordPairDTO>
 
     suspend fun updateWordMemorized(wordPairId: Int, memorized: Boolean)
 

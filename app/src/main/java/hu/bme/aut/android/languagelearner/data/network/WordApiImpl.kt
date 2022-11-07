@@ -1,9 +1,6 @@
 package hu.bme.aut.android.languagelearner.data.network
 
-import hu.bme.aut.android.languagelearner.data.network.dto.LoginRequestDTO
-import hu.bme.aut.android.languagelearner.data.network.dto.LoginResponse
-import hu.bme.aut.android.languagelearner.data.network.dto.UserDetailsResponse
-import hu.bme.aut.android.languagelearner.data.network.dto.WordSetDTO
+import hu.bme.aut.android.languagelearner.data.network.dto.*
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
@@ -59,10 +56,19 @@ class WordApiImpl(
         }.body()
     }
 
+    override suspend fun getAllWordsByCourseId(id: Int): List<WordPairDTO> {
+        return client.get(WordApi.Endpoints.Words.url + "/words/" + id.toString()){
+            bearerAuth(loginResponse.accessToken)
+        }.body()
+    }
+
     init {
         GlobalScope.launch {
             loginResponse = login()
-            getAllCourses()
+            val courses = getAllCourses()
+            courses.forEach {
+                getAllWordsByCourseId(it.id)
+            }
         }
     }
 
