@@ -15,7 +15,9 @@ import hu.bme.aut.android.languagelearner.MainActivity
 import hu.bme.aut.android.languagelearner.data.network.WordApi
 import hu.bme.aut.android.languagelearner.data.network.dto.RefreshTokenRequestDTO
 import hu.bme.aut.android.languagelearner.di.NetworkModule
+import hu.bme.aut.android.languagelearner.domain.repository.WordRepository
 import io.ktor.client.plugins.auth.providers.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -25,7 +27,8 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     @ApplicationContext context: Context,
-    private val wordApi: WordApi
+    private val wordApi: WordApi,
+    private val wordRepository: WordRepository
 ) : ViewModel() {
 
     var state by mutableStateOf(LoginState())
@@ -45,11 +48,12 @@ class LoginViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            if (sharedPreferences.contains("email") && sharedPreferences.contains("password") && MainActivity.stayLoginIn){
+            if (sharedPreferences.contains("email") && sharedPreferences.contains("password") && !MainActivity.loggedIn){
                 state = state.copy(isLoading = true)
                 val loginResponse = wordApi.login(sharedPreferences.getString("email","")!!, sharedPreferences.getString("password","")!!)
                 NetworkModule.bearerTokenStorage.add(BearerTokens(loginResponse.accessToken, loginResponse.refreshToken))
                 validationEventChannel.send(LoginScreenEvent.LoginSuccess)
+                MainActivity.loggedIn = true
                 state = state.copy(isLoading = false)
             }
         }
@@ -100,7 +104,7 @@ class LoginViewModel @Inject constructor(
                     putString("password", state.password)
                     apply()
                 }
-                MainActivity.stayLoginIn = true
+                MainActivity.loggedIn = true
                 if (loginResponse.userDetails.name == null){
                     state = state.copy(isName = true)
                 }else{
@@ -121,14 +125,16 @@ class LoginViewModel @Inject constructor(
     }
 
     private fun logout() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             state = state.copy(isLoading = true)
             with(sharedPreferences.edit()){
                 remove("email")
                 remove("password")
                 apply()
             }
+            wordRepository.clearAll()
             wordApi.logout(RefreshTokenRequestDTO(NetworkModule.bearerTokenStorage.last().refreshToken))
+            MainActivity.loggedIn = false
             validationEventChannel.send(LoginScreenEvent.LogoutSuccess)
             state = state.copy(isLoading = false)
         }

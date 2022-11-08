@@ -67,6 +67,14 @@ class WordRepositoryImpl @Inject constructor(
         wordApi.sendScore(courseId, score)
     }
 
+    override suspend fun clearAll() {
+        wordSetDao.clearWordSetWordTagCrossRefs()
+        wordSetDao.clearWordSetWordPairCrossRefs()
+        wordSetDao.clearWordSets()
+        wordDao.clearWords()
+        tagDao.clearTags()
+    }
+
     override suspend fun getWordsBySetId(id: Int): List<WordPair> =
         wordDao.getWordPairsBySetId(id).map (WordPairEntity::toDomain)
 

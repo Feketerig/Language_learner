@@ -26,4 +26,13 @@ interface WordSetDao {
     @Transaction
     @Query("select * from word_sets where id in (select word_set_id from word_sets_word_tags where word_tag_id in (:searchTags)) and (LOWER(title) Like '%' || LOWER(:searchQuery) || '%' or LOWER(description) Like '%' || LOWER(:searchQuery) || '%')")
     fun getWordSets(searchQuery: String, searchTags: Set<Int>): Flow<List<PopulatedWordSet>>
+
+    @Query("delete from word_sets")
+    fun clearWordSets()
+
+    @Query("delete from word_sets_word_pairs")
+    fun clearWordSetWordPairCrossRefs()
+
+    @Query("delete from word_sets_word_tags")
+    fun clearWordSetWordTagCrossRefs()
 }

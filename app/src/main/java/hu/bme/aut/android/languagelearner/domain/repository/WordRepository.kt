@@ -21,4 +21,6 @@ interface WordRepository {
     suspend fun wordMemorizedChanged(wordPairId: Int, memorized: Boolean)
 
     suspend fun sendScore(courseId: Int, score: Int)
+
+    suspend fun clearAll()
 }

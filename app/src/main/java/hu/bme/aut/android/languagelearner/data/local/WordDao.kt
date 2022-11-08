@@ -13,4 +13,7 @@ interface WordDao {
 
     @Query("update words set memorized = :memorized where id = :id")
     suspend fun updateWordMemorized(id: Int, memorized: Boolean)
+
+    @Query("delete from words")
+    fun clearWords()
 }

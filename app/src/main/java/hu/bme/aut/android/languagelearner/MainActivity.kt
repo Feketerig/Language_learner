@@ -56,6 +56,7 @@ class MainActivity : ComponentActivity() {
                                     titleContentColor = MaterialTheme.colorScheme.onSurfaceVariant
                                 ),
                                 actions = {
+
                                     IconButton(onClick = { showMenu = !showMenu }) {
                                         Icon(
                                             imageVector = Icons.Filled.MoreVert,
@@ -70,9 +71,10 @@ class MainActivity : ComponentActivity() {
                                         DropdownMenuItem(
                                             text = { Text(text = "Logout") },
                                             onClick = {
-                                                stayLoginIn = false
                                                 showMenu = false
-                                                navHostController.navigate(Screen.Logout.route)
+                                                if (loggedIn) {
+                                                    navHostController.navigate(Screen.Logout.route)
+                                                }
                                             })
                                     }
                                 }
@@ -93,6 +95,6 @@ class MainActivity : ComponentActivity() {
     }
 
     companion object{
-        var stayLoginIn = true
+        var loggedIn = false
     }
 }

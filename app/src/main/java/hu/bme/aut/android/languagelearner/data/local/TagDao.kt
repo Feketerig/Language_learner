@@ -14,4 +14,7 @@ interface TagDao {
 
     @Query("select * from tags")
     fun getTags(): Flow<List<WordTagEntity>>
+
+    @Query("delete from tags")
+    fun clearTags()
 }
