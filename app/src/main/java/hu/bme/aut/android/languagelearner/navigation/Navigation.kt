@@ -20,7 +20,7 @@ fun Navigation(
 ) {
     NavHost(
         navController = navHostController,
-        startDestination = Screen.SetList.route,
+        startDestination = Screen.Login.route,
         modifier = modifier
     ){
         composable(route = Screen.SetList.route){
@@ -66,21 +66,22 @@ fun Navigation(
             }
         }
         composable(
-            route = Screen.Login.route+"/{mode}",
-            arguments = listOf(
-                navArgument("mode"){
-                    type = NavType.StringType
-                    nullable = false
-                }
+            route = Screen.Logout.route,
+        ) {
+            LoginScreen(
+                mode = "logout",
+                navController = navHostController,
+                target = Screen.SetList.route
             )
-        ){
-            it.arguments?.getString("mode")?.let { mode ->
-                LoginScreen(
-                    mode = mode,
-                    navController = navHostController,
-                    target = Screen.SetList.route
-                )
-            }
+        }
+        composable(
+            route = Screen.Login.route,
+        ) {
+            LoginScreen(
+                mode = "login",
+                navController = navHostController,
+                target = Screen.SetList.route
+            )
         }
     }
 

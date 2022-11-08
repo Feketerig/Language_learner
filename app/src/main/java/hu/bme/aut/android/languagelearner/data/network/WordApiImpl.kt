@@ -4,7 +4,6 @@ import hu.bme.aut.android.languagelearner.data.network.dto.*
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
-import io.ktor.http.*
 
 class WordApiImpl(
     private val client: HttpClient
@@ -40,31 +39,31 @@ class WordApiImpl(
 
     }
 
-    override suspend fun login(): LoginResponse {
+    override suspend fun login(email: String, password: String): LoginResponse {
         return client.post(urlString = WordApi.Endpoints.Auth.url + "/login"){
-            contentType(ContentType.Application.Json)
-            setBody(LoginRequestDTO("asd2@asd.asd", "rM8ax1hXrk"))
+            setBody(LoginRequestDTO(email, password))
+            //setBody(LoginRequestDTO("asd2@asd.asd", "rM8ax1hXrk"))
             //setBody(LoginRequestDTO("asd3@asd.asd", "TvX-gl1pNv"))
             //setBody(LoginRequestDTO("asd@asd.asd", "12345678"))
         }.body()
+    }
 
+    override suspend fun logout(refreshToken: RefreshTokenRequestDTO) {
+        client.post(WordApi.Endpoints.Auth.url + "/logout"){
+            setBody(refreshToken)
+        }
     }
 
     override suspend fun getAllCourses(): List<WordSetDTO> {
-        return client.get(WordApi.Endpoints.Course.url + "/student/all"){
-            bearerAuth(loginResponse.accessToken)
-        }.body()
+        return client.get(WordApi.Endpoints.Course.url + "/student/all").body()
     }
 
     override suspend fun getAllWordsByCourseId(id: Int): List<WordPairDTO> {
-        return client.get(WordApi.Endpoints.Words.url + "/student/words/" + id.toString()){
-            bearerAuth(loginResponse.accessToken)
-        }.body()
+        return client.get(WordApi.Endpoints.Words.url + "/student/words/" + id.toString()).body()
     }
 
     override suspend fun sendScore(courseId: Int, score: Int) {
         client.post(WordApi.Endpoints.Course.url + "/submit"){
-            bearerAuth(loginResponse.accessToken)
             setBody(SubmissionRequestDTO(
                 courseId = courseId,
                 score = score
@@ -72,9 +71,9 @@ class WordApiImpl(
         }
     }
 
-
-
-    companion object{
-        var loginResponse = LoginResponse(UserDetailsResponse(), "", "")
+    override suspend fun setName(name: String){
+        client.post(WordApi.Endpoints.Auth.url + "/name"){
+            setBody(name)
+        }
     }
 }

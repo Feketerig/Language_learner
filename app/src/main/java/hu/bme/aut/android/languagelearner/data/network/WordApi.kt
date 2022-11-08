@@ -1,14 +1,17 @@
 package hu.bme.aut.android.languagelearner.data.network
 
 import hu.bme.aut.android.languagelearner.data.network.dto.LoginResponse
+import hu.bme.aut.android.languagelearner.data.network.dto.RefreshTokenRequestDTO
 import hu.bme.aut.android.languagelearner.data.network.dto.WordPairDTO
 import hu.bme.aut.android.languagelearner.data.network.dto.WordSetDTO
 
 interface WordApi {
 
-    suspend fun login(): LoginResponse
+    suspend fun login(email: String, password: String): LoginResponse
 
+    suspend fun logout(refreshToken: RefreshTokenRequestDTO)
 
+    suspend fun setName(name: String)
 
     suspend fun getAllCourses(): List<WordSetDTO>
 

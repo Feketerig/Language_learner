@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import hu.bme.aut.android.languagelearner.navigation.Navigation
+import hu.bme.aut.android.languagelearner.navigation.Screen
 import hu.bme.aut.android.languagelearner.ui.theme.LanguageLearnerTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -68,7 +69,11 @@ class MainActivity : ComponentActivity() {
                                     ) {
                                         DropdownMenuItem(
                                             text = { Text(text = "Logout") },
-                                            onClick = { /*TODO*/ })
+                                            onClick = {
+                                                stayLoginIn = false
+                                                showMenu = false
+                                                navHostController.navigate(Screen.Logout.route)
+                                            })
                                     }
                                 }
                             )
@@ -85,5 +90,9 @@ class MainActivity : ComponentActivity() {
 
             }
         }
+    }
+
+    companion object{
+        var stayLoginIn = true
     }
 }

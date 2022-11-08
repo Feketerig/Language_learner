@@ -5,8 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -61,6 +60,7 @@ fun LoginScreen(
                         "Sikeres kijelentkezés",
                         Toast.LENGTH_LONG
                     ).show()
+                    navController.navigate(Screen.Login.route)
                 }
             }
         }
@@ -73,6 +73,35 @@ fun LoginScreen(
         ) {
             CircularProgressIndicator()
         }
+    }else if(state.isName) {
+        var name by remember {
+            mutableStateOf("")
+        }
+        AlertDialog(
+            onDismissRequest = {},
+            title = {
+                Text(text = "Figyelem!")
+            },
+            text = {
+                Column() {
+                    Text("Please write down your full name")
+                    Spacer(modifier = Modifier.height(5.dp))
+                    TextField(
+                        value = name,
+                        modifier = Modifier.fillMaxWidth(),
+                        onValueChange = { name = it }
+                    )
+                }
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        viewModel.onEvent(LoginEvent.Name(name))
+                    }) {
+                    Text("Send")
+                }
+            }
+        )
     }else if (mode == "login") {
         Column(
             modifier = Modifier
@@ -89,20 +118,13 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(8.dp))
             TextField(
                 value = state.email,
-                isError = state.emailError != null,
+                isError = state.isError,
                 modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Email
                 ),
                 onValueChange = { viewModel.onEvent(LoginEvent.EmailChanged(it)) }
             )
-            if (state.emailError != null) {
-                Text(
-                    text = state.emailError,
-                    color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.align(Alignment.End)
-                )
-            }
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -110,7 +132,7 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(8.dp))
             TextField(
                 value = state.password,
-                isError = state.passwordError != null,
+                isError = state.isError,
                 modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Password
@@ -118,29 +140,6 @@ fun LoginScreen(
                 visualTransformation = PasswordVisualTransformation(),
                 onValueChange = { viewModel.onEvent(LoginEvent.PasswordChanged(it)) }
             )
-            if (state.passwordError != null) {
-                Text(
-                    text = state.passwordError,
-                    color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.align(Alignment.End)
-                )
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Checkbox(
-                    checked = state.stayLoggedIn,
-                    onCheckedChange = {
-                        viewModel.onEvent(LoginEvent.StayLoggedInCheckBoxChanged(it))
-                    }
-                )
-                Spacer(modifier = Modifier.width(5.dp))
-                Text(text = "Maradjak bejelentkezve")
-            }
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -181,8 +180,3 @@ fun LoginScreen(
         )
     }
 }
-
-
-//Todo Név bekérés post
-
-//nodejs 16

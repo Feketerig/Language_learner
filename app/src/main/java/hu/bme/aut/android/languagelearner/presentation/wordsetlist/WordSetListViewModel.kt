@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import hu.bme.aut.android.languagelearner.data.network.WordApi
-import hu.bme.aut.android.languagelearner.data.network.WordApiImpl
 import hu.bme.aut.android.languagelearner.domain.model.WordSet
 import hu.bme.aut.android.languagelearner.domain.repository.WordRepository
 import kotlinx.coroutines.flow.Flow
@@ -34,7 +33,6 @@ class WordSetListViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            WordApiImpl.loginResponse = wordApi.login()
             wordRepository.sync()
         }
     }
