@@ -11,6 +11,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import java.lang.Integer.min
 import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -94,7 +95,7 @@ fun QuizScreen(
     }else if(viewModel.words.isNotEmpty()) {
         when(viewModel.actualQuizType){
             QuizTypes.SHORT_ANSWER -> ShortAnswerUI(viewModel)
-            QuizTypes.MULTIPLE_CHOICE -> MultipleChoiceUI(2, viewModel)
+            QuizTypes.MULTIPLE_CHOICE -> MultipleChoiceUI(min(viewModel.words.size, 4), viewModel)
             else -> Text(text = "No UI was found")
         }
     }

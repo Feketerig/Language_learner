@@ -62,6 +62,18 @@ class WordApiImpl(
         }.body()
     }
 
+    override suspend fun sendScore(courseId: Int, score: Int) {
+        client.post(WordApi.Endpoints.Course.url + "/submit"){
+            bearerAuth(loginResponse.accessToken)
+            setBody(SubmissionRequestDTO(
+                courseId = courseId,
+                score = score
+            ))
+        }
+    }
+
+
+
     companion object{
         var loginResponse = LoginResponse(UserDetailsResponse(), "", "")
     }

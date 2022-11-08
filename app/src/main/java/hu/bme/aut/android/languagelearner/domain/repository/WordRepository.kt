@@ -19,4 +19,6 @@ interface WordRepository {
     fun getTags(): Flow<List<WordTag>>
 
     suspend fun wordMemorizedChanged(wordPairId: Int, memorized: Boolean)
+
+    suspend fun sendScore(courseId: Int, score: Int)
 }

@@ -18,6 +18,8 @@ class QuizViewModel@Inject constructor(
     private val savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
+    var setId = savedStateHandle.get<Int>("setId") ?: 0
+
     var words = emptyList<WordPair>()
 
     var score by mutableStateOf(0)
@@ -71,6 +73,9 @@ class QuizViewModel@Inject constructor(
         actualWordIndex++
         if (actualWordIndex == words.size){
             done = true
+            viewModelScope.launch {
+                wordRepository.sendScore(courseId = setId, score = score)
+            }
             return
         }
         actualQuizType = selectedQuiz.random()
@@ -82,7 +87,7 @@ class QuizViewModel@Inject constructor(
         isChecked = false
     }
 
-    fun generateAnswersForMultipleChoice() {
+    private fun generateAnswersForMultipleChoice() {
         val actualWordRemovedList = words.map { it.second }.toMutableList()
         actualWordRemovedList.remove(words[actualWordIndex].second)
         multipleChoiceAnswers = actualWordRemovedList.shuffled()

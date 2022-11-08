@@ -63,6 +63,10 @@ class WordRepositoryImpl @Inject constructor(
         wordSetDao.insertWordSetWordTagCrossRefs(wordSetWordTagCrossRefs = wordSets.map { wordSet -> wordSet.tags.map { tag -> WordSetWordTagCrossRef(WordSetId = wordSet.id, WordTag = tagDao.getTagIdByTag(tag = tag.tag)) } }.flatten())*/
     }
 
+    override suspend fun sendScore(courseId: Int, score: Int) {
+        wordApi.sendScore(courseId, score)
+    }
+
     override suspend fun getWordsBySetId(id: Int): List<WordPair> =
         wordDao.getWordPairsBySetId(id).map (WordPairEntity::toDomain)
 

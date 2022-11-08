@@ -8,9 +8,13 @@ interface WordApi {
 
     suspend fun login(): LoginResponse
 
+
+
     suspend fun getAllCourses(): List<WordSetDTO>
 
     suspend fun getAllWordsByCourseId(id: Int): List<WordPairDTO>
+
+    suspend fun sendScore(courseId: Int, score: Int)
 
     suspend fun updateWordMemorized(wordPairId: Int, memorized: Boolean)
 
