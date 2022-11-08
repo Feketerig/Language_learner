@@ -11,14 +11,6 @@ import hu.bme.aut.android.languagelearner.data.local.TagDao
 import hu.bme.aut.android.languagelearner.data.local.WordDao
 import hu.bme.aut.android.languagelearner.data.local.WordDatabase
 import hu.bme.aut.android.languagelearner.data.local.WordSetDao
-import hu.bme.aut.android.languagelearner.data.network.WordApi
-import hu.bme.aut.android.languagelearner.data.network.WordApiImpl
-import hu.bme.aut.android.languagelearner.data.repository.WordRepositoryImpl
-import hu.bme.aut.android.languagelearner.domain.repository.WordRepository
-import hu.bme.aut.android.languagelearner.domain.use_case.ValidateEmail
-import hu.bme.aut.android.languagelearner.domain.use_case.ValidatePassword
-import hu.bme.aut.android.languagelearner.domain.use_case.ValidateRepeatedPassword
-import hu.bme.aut.android.languagelearner.domain.use_case.ValidateTerms
 import io.ktor.client.*
 import io.ktor.client.engine.android.*
 import io.ktor.client.plugins.*
@@ -52,64 +44,4 @@ object DatabaseModule {
     @Provides
     fun providesTagDao(database: WordDatabase): TagDao =
         database.tagDao
-
-    //TODO move this
-    @Provides
-    fun provideWordRepository(wordSetDao: WordSetDao, wordDao: WordDao, tagDao: TagDao, wordApi: WordApi): WordRepository =
-        WordRepositoryImpl(wordSetDao,wordDao, tagDao, wordApi)
-
-    //TODO move this
-    @Provides
-    @Singleton
-    fun provideValidateEmail(): ValidateEmail {
-        return ValidateEmail()
-    }
-
-    @Provides
-    @Singleton
-    fun provideValidatePassword(): ValidatePassword {
-        return ValidatePassword()
-    }
-
-    @Provides
-    @Singleton
-    fun provideValidateRepeatedPassword(): ValidateRepeatedPassword {
-        return ValidateRepeatedPassword()
-    }
-
-    @Provides
-    @Singleton
-    fun provideValidateTerms(): ValidateTerms {
-        return ValidateTerms()
-    }
-
-    @Provides
-    @Singleton
-    fun provideNetworkInterface(): WordApi {
-        return WordApiImpl(
-            HttpClient(Android) {
-                install(Logging) {
-                    logger = Logger.SIMPLE
-                    level = LogLevel.ALL
-                }
-                install(ContentNegotiation) {
-                    json()
-                }
-                /*install(Auth){
-                    bearer {
-                        loadTokens {
-                            getToken
-                            BearerTokens(
-                                accessToken = token,
-                                refreshToken = ""
-                            )
-                        }
-                    }
-                }*/
-                defaultRequest {
-                    contentType(ContentType.Application.Json)
-                    accept(ContentType.Application.Json)
-                }
-            })
-    }
 }
