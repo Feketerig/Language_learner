@@ -114,6 +114,14 @@ fun LoginScreen(
                 fontWeight = FontWeight.Bold
             )
             Spacer(modifier = Modifier.height(16.dp))
+            if (state.isError){
+                Text(
+                    text = "Hibás felhasználónév vagy jelszó",
+                    color = MaterialTheme.colorScheme.error,
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+
+            }
             Text(text = "Email:")
             Spacer(modifier = Modifier.height(8.dp))
             TextField(
