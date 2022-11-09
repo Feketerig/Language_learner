@@ -42,6 +42,20 @@ class WordRepositoryImpl @Inject constructor(
 
         wordSetDao.upsertWordSets(courses.map(WordSetDTO::toDatabase))
 
+        courses.forEach { course ->
+            val tags = course.metadata
+            val removeExistingTags = tags.filter { tag -> tagDao.getTagIdByTag(tag) == null }
+            tagDao.upsertWordTags(removeExistingTags.map {tag -> WordTagEntity(0, tag) })
+            wordSetDao.insertWordSetWordTagCrossRefs(
+                tags.map { tag ->
+                    WordSetWordTagCrossRef(
+                        WordSetId = course.id,
+                        WordTag = tagDao.getTagIdByTag(tag)!!
+                    )
+                }
+            )
+        }
+
         courses.forEach{ course ->
             val words = wordApi.getAllWordsByCourseId(course.id)
 
@@ -55,12 +69,6 @@ class WordRepositoryImpl @Inject constructor(
                 }
             )
         }
-
-        /*wordSetDao.insertWordSets(wordSets = wordSets.map { WordSetEntity(it.id, it.title, it.description) })
-        wordDao.insertWordPairs(wordPairs = wordSets.map { wordSet -> wordSet.words.map { WordPairEntity(it.id, it.first, it.second, it.memorized) } }.flatten() )
-        tagDao.insertWordTags(wordTags = wordSets.map { wordSet -> wordSet.tags.map { WordSetTagEntity(id = 0, tag = it.tag) } }.flatten())
-        wordSetDao.insertWordSetWordPairCrossRefs(wordSetWordPairCrossRefs = wordSets.map { wordSet -> wordSet.words.map { word -> WordSetWordPairCrossRef(WordSetId = wordSet.id, WordPairId = word.id) } }.flatten())
-        wordSetDao.insertWordSetWordTagCrossRefs(wordSetWordTagCrossRefs = wordSets.map { wordSet -> wordSet.tags.map { tag -> WordSetWordTagCrossRef(WordSetId = wordSet.id, WordTag = tagDao.getTagIdByTag(tag = tag.tag)) } }.flatten())*/
     }
 
     override suspend fun sendScore(courseId: Int, score: Int) {

@@ -18,7 +18,8 @@ data class WordSetDTO (
     val name: String,
     val description: String,
     @Serializable(InstantSerializer::class)
-    val deadline: Instant
+    val deadline: Instant,
+    val metadata: List<String>
 )
 
 object InstantSerializer : KSerializer<Instant> {

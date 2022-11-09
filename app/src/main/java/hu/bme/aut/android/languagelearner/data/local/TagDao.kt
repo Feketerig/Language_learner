@@ -10,7 +10,7 @@ interface TagDao {
     suspend fun upsertWordTags(wordTags: List<WordTagEntity>)
 
     @Query("select id from tags where tag = :tag")
-    suspend fun getTagIdByTag(tag: String): Int
+    suspend fun getTagIdByTag(tag: String): Int?
 
     @Query("select * from tags")
     fun getTags(): Flow<List<WordTagEntity>>
