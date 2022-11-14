@@ -7,9 +7,9 @@ import kotlinx.coroutines.flow.Flow
 
 interface WordRepository {
 
-    fun getWordSets(
+    suspend fun getWordSets(
         searchQuery: String,
-        searchTags: Set<Int>
+        searchTags: List<Int>
     ): Flow<List<WordSet>>
 
     suspend fun sync()

@@ -24,7 +24,7 @@ fun WordSetListScreen(
     navHostController: NavHostController,
     viewModel: WordSetListViewModel = hiltViewModel()
 ) {
-    val wordSets by viewModel.wordSets.collectAsState(initial = emptyList())
+    val wordSets = viewModel.wordSets
     val tags by viewModel.allTags.collectAsState(initial = emptyList())
 
     Column(

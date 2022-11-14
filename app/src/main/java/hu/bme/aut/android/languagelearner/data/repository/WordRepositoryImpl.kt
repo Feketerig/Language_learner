@@ -1,6 +1,5 @@
 package hu.bme.aut.android.languagelearner.data.repository
 
-import androidx.sqlite.db.SimpleSQLiteQuery
 import hu.bme.aut.android.languagelearner.data.local.*
 import hu.bme.aut.android.languagelearner.data.mapper.toDatabase
 import hu.bme.aut.android.languagelearner.data.mapper.toDomain
@@ -12,6 +11,7 @@ import hu.bme.aut.android.languagelearner.domain.model.WordSet
 import hu.bme.aut.android.languagelearner.domain.model.WordTag
 import hu.bme.aut.android.languagelearner.domain.repository.WordRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -22,19 +22,19 @@ class WordRepositoryImpl @Inject constructor(
     private val wordApi: WordApi
 ): WordRepository {
 
-    override fun getWordSets(searchQuery: String, searchTags: Set<Int>): Flow<List<WordSet>> {
-        val query = if (searchTags.isEmpty()){
-            SimpleSQLiteQuery("select * from word_sets where LOWER(title) Like '%' || LOWER(?) || '%' or LOWER(description) Like '%' || LOWER(?) || '%'", arrayOf(searchQuery, searchQuery))
-        }else{
-            //TODO fix
-            //Log.d("valami", searchTags.toString())
-            SimpleSQLiteQuery("select * from word_sets where id in (select word_set_id from word_sets_word_tags where word_tag_id in (?)) and (LOWER(title) Like '%' || LOWER(?) || '%' or LOWER(description) Like '%' || LOWER(?) || '%')", arrayOf(
-                setOf(1), searchQuery,searchQuery))
+    override suspend fun getWordSets(searchQuery: String, searchTags: List<Int>): Flow<List<WordSet>> {
+        return flow {
+            val list = wordSetDao.getWordSets(searchQuery)
+            if (searchTags.isEmpty()){
+                emit(list.map(PopulatedWordSet::toDomain))
+            }else{
+                val map = list.filter { wordSet ->
+                    val result = wordSet.tags.map { tag -> tag.id }.containsAll(searchTags)
+                    result
+                }.map(PopulatedWordSet::toDomain)
+                emit(map)
+            }
         }
-        val result = wordSetDao.getWordSets(query).map {
-            //Log.d("valami", it.toString())
-            it.map(PopulatedWordSet::toDomain) }
-        return result
     }
 
     override suspend fun sync() {

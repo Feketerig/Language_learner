@@ -8,9 +8,6 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import hu.bme.aut.android.languagelearner.domain.model.WordSet
 import hu.bme.aut.android.languagelearner.domain.repository.WordRepository
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -18,10 +15,9 @@ import javax.inject.Inject
 class WordSetListViewModel @Inject constructor(
     private val wordRepository: WordRepository
 ): ViewModel() {
-    //TODO check if this is good
     var selectedTags by mutableStateOf(setOf<Int>())
 
-    var wordSets = getWordSets("", setOf())
+    var wordSets by mutableStateOf(emptyList<WordSet>())
 
     var allTags = wordRepository.getTags()
 
@@ -32,21 +28,24 @@ class WordSetListViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             wordRepository.sync()
+            getWordSets()
         }
     }
 
     private fun getWordSets(
-        searchQuery: String,
-        tags: Set<Int>
-    ): Flow<List<WordSet>> = wordRepository.getWordSets(searchQuery, tags).stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = emptyList()
-        )
+        searchQuery: String = "",
+        tags: List<Int> = emptyList()
+    ){
+        viewModelScope.launch {
+            wordRepository.getWordSets(searchQuery, tags).collect { result ->
+                wordSets = result
+            }
+        }
+    }
 
     fun onSearchTextChange(newValue: String){
         searchQuery = newValue
-        updateWords()
+        getWordSets(searchQuery, selectedTags.toList())
     }
 
     fun onSelectedTagsChange(id: Int){
@@ -55,10 +54,6 @@ class WordSetListViewModel @Inject constructor(
         } else {
             selectedTags + id
         }
-        updateWords()
-    }
-
-    private fun updateWords(){
-        wordSets = getWordSets(searchQuery, selectedTags)
+        getWordSets(searchQuery, selectedTags.toList())
     }
 }
