@@ -9,7 +9,8 @@ fun WordSetDTO.toDatabase(): WordSetEntity =
     WordSetEntity(
         id = id,
         title = name,
-        description = description
+        description = description,
+        deadline = deadline.toEpochMilliseconds()
     )
 
 fun WordPairDTO.toDatabase(): WordPairEntity =

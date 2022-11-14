@@ -6,11 +6,13 @@ import hu.bme.aut.android.languagelearner.data.local.WordTagEntity
 import hu.bme.aut.android.languagelearner.domain.model.WordPair
 import hu.bme.aut.android.languagelearner.domain.model.WordSet
 import hu.bme.aut.android.languagelearner.domain.model.WordTag
+import kotlinx.datetime.Instant
 
 fun PopulatedWordSet.toDomain() = WordSet(
     id = wordSet.id,
     title = wordSet.title,
     description = wordSet.description,
+    deadline = Instant.fromEpochMilliseconds(wordSet.deadline),
     words = words.map(WordPairEntity::toDomain),
     tags = tags.map(WordTagEntity::toDomain),
 )

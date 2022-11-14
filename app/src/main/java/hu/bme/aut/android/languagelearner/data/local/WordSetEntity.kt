@@ -8,5 +8,6 @@ data class WordSetEntity(
     @PrimaryKey
     val id: Int,
     val title: String,
-    val description: String
+    val description: String,
+    val deadline: Long
 )

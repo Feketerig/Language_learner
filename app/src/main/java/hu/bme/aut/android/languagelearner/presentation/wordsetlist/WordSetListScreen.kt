@@ -66,6 +66,7 @@ fun WordSetListScreen(
                 WordSet(
                     title = wordSet.title,
                     description = wordSet.description,
+                    deadline = wordSet.deadline,
                     wordsCount = wordSet.words.size,
                     wordsCountMemorized = wordSet.words.filter { it.memorized }.size,
                     tags = wordSet.tags,

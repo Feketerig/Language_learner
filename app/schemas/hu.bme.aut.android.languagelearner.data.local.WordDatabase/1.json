@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "f8d24c8843f9cee8d39b734134abb763",
+    "identityHash": "5c88b289867b1b34a0b0b2a2b6024513",
     "entities": [
       {
         "tableName": "word_sets",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `title` TEXT NOT NULL, `description` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `title` TEXT NOT NULL, `description` TEXT NOT NULL, `deadline` INTEGER NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -25,13 +25,19 @@
             "columnName": "description",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "deadline",
+            "columnName": "deadline",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
+          "autoGenerate": false,
           "columnNames": [
             "id"
-          ],
-          "autoGenerate": false
+          ]
         },
         "indices": [],
         "foreignKeys": []
@@ -54,11 +60,11 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": false,
           "columnNames": [
             "word_set_id",
             "word_pair_id"
-          ],
-          "autoGenerate": false
+          ]
         },
         "indices": [
           {
@@ -135,10 +141,10 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": false,
           "columnNames": [
             "id"
-          ],
-          "autoGenerate": false
+          ]
         },
         "indices": [],
         "foreignKeys": []
@@ -161,11 +167,11 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": false,
           "columnNames": [
             "word_set_id",
             "word_tag_id"
-          ],
-          "autoGenerate": false
+          ]
         },
         "indices": [
           {
@@ -230,10 +236,10 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": true,
           "columnNames": [
             "id"
-          ],
-          "autoGenerate": true
+          ]
         },
         "indices": [
           {
@@ -252,7 +258,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f8d24c8843f9cee8d39b734134abb763')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5c88b289867b1b34a0b0b2a2b6024513')"
     ]
   }
 }
